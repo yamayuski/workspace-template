@@ -1,0 +1,77 @@
+{
+  "$schema": "https://raw.githubusercontent.com/devcontainers/spec/refs/heads/main/schemas/devContainer.schema.json",
+  "name": "DevContainer Template",
+  "dockerComposeFile": [
+    // You can add your custom compose files here.
+    "../compose.yaml",
+    "./compose.yaml"
+  ],
+  "service": "workspace",
+  "workspaceFolder": "/workspace",
+  "shutdownAction": "stopCompose",
+  "init": true,
+  "remoteUser": "${localEnv:USERNAME:devuser}",
+  "containerUser": "${localEnv:USERNAME:devuser}",
+  "remoteEnv": {
+    "LOCAL_WORKSPACE_FOLDER": "{localWorkspaceFolder:/workspace}"
+  },
+  "features": {
+    "ghcr.io/devcontainers/features/common-utils:2": {
+      "configureZshAsDefaultShell": true,
+      "installOhMyZsh": true,
+      "installOhMyZshConfig": true,
+      "installZsh": true,
+      "nonFreePackages": false,
+      "upgradePackages": false,
+      "userUid": "${localEnv:USER_UID:1000}",
+      "userGid": "${localEnv:USER_GID:1000}",
+      "username": "${localEnv:USERNAME:devuser}"
+    },
+    "ghcr.io/devcontainers/features/docker-outside-of-docker:1": {
+      "moby": false,
+      "dockerDashComposeVersion": "2",
+      "installDockerBuildx": true,
+      "installDockerComposeSwitch": false,
+      "mobyBuildxVersion": "latest",
+      "version": "latest"
+    },
+    "ghcr.io/devcontainers/features/github-cli:1": {
+      "version": "latest",
+      "installDirectlyFromGitHubRelease": true
+    }
+    // You can add more features here.
+    // https://containers.dev/features
+  },
+  "customizations": {
+    // You can customize your dev container for VS Code, Codespaces, and JetBrains IDEs.
+    "vscode": {
+      "extensions": [
+        "EditorConfig.EditorConfig",
+        "GitHub.copilot",
+        "GitHub.copilot-chat",
+        "DavidAnson.vscode-markdownlint",
+        "redhat.vscode-yaml",
+        "christian-kohler.path-intellisense",
+        "mikestead.dotenv",
+        "bierner.markdown-mermaid",
+        "donjayamanne.git-extension-pack"
+      ],
+      "mcp": {
+      },
+      "settings": {}
+    },
+    "codespaces": {
+      "repositories": {}
+    },
+    "jetbrains": {
+      "plugins": [
+        "com.github.copilot",
+        "ru.adelf.idea.dotenv",
+        "Docker",
+        "org.jetbrains.plugins.github",
+        "org.editorconfig.editorconfigjetbrains",
+        "org.jetbrains.plugins.docker.gateway"
+      ]
+    }
+  }
+}
