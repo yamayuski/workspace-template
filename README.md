@@ -10,7 +10,7 @@ Git credential helper may be installed and its configuration will be shared to c
 - Windows: <https://github.com/git-for-windows/git/releases>
   - `git credential-manager github login` to login GitHub
 
-### OPTIONAL: Sharing GPG KEys
+### OPTIONAL: Sharing GPG Keys
 
 If you want to sign your git commits, you can share your GPG keys to container.
 
