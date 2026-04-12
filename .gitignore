@@ -21,6 +21,9 @@ coverage/
 
 .DS_Store
 *~
+*Zone.Identifier
+Thumbs.db
 
+.pnpm-cache/
 node_modules/
 vendor/

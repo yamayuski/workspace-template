@@ -1,23 +1,23 @@
 # syntax=docker/dockerfile:1.6
 # check=error=true
 
-# I dont need [devcontainer base image](https://github.com/devcontainers/images) because
+# We dont need [devcontainer base image](https://github.com/devcontainers/images) because
 # That is do nothing in Dockerfile!
-ARG IMAGE_BASE=debian:trixie-slim
+ARG IMAGE_BASE=debian:stable-slim
 
 # Use `mirror.gcr.io` to avoid pull rate limit of Docker Hub
-FROM --platform=${BUILDPLATFORM} mirror.gcr.io/${IMAGE_BASE}
+FROM --platform=${BUILDPLATFORM} mirror.gcr.io/${IMAGE_BASE} AS base
 
-ARG USERNAME=devuser
-ARG USER_UID=1000
-ARG USER_GID=1000
-ARG TZ=UTC
-ARG LANGUAGE=en
-ARG COUNTRY=US
-ARG ENCODING=UTF-8
-ARG LOCALE="en_US.UTF-8 UTF-8"
-ARG EDITOR=vim
-ARG GIT_DELTA_VERSION=0.18.2
+ARG USERNAME=devuser \
+    USER_UID=1000 \
+    USER_GID=1000 \
+    TZ=UTC \
+    LANGUAGE=en \
+    COUNTRY=US \
+    ENCODING=UTF-8 \
+    LOCALE="en_US.UTF-8 UTF-8" \
+    EDITOR=vim \
+    GIT_DELTA_VERSION=0.18.2
 
 ENV DEBIAN_FRONTEND=noninteractive \
     TZ=${TZ} \
@@ -34,8 +34,11 @@ RUN \
 rm -f /etc/apt/apt.conf.d/docker-clean
 echo 'Binary::apt::APT::Keep-Downloaded-Packages "true";' > /etc/apt/apt.conf.d/keep-cache
 apt-get update
+apt-get full-upgrade -y --no-install-recommends
 apt-get install -y --no-install-recommends \
     aggregate \
+    apt-utils \
+    byobu \
     ca-certificates \
     curl \
     dnsutils \
@@ -44,6 +47,7 @@ apt-get install -y --no-install-recommends \
     fonts-powerline \
     fzf \
     gnupg \
+    gosu \
     htop \
     iproute2 \
     ipset \
@@ -90,8 +94,8 @@ ENV LC_ALL="${LANGUAGE}_${COUNTRY}.${ENCODING}" \
 
 RUN <<EOL
 # Update runtime user and group
-(getent group ${USERNAME} > /dev/null && groupmod --gid ${USER_GID} ${USERNAME} || groupadd --gid ${USER_GID} ${USERNAME})
-(getent passwd ${USERNAME} > /dev/null && usermod --gid ${USER_GID} --uid ${USER_UID} ${USERNAME} || useradd --gid ${USER_GID} --uid ${USER_UID} -m -s /bin/bash ${USERNAME})
+groupadd --gid ${USER_GID} ${USERNAME}
+useradd --gid ${USER_GID} --uid ${USER_UID} -m -s /bin/bash ${USERNAME}
 echo "${USERNAME} ALL=(root) NOPASSWD:ALL" > "/etc/sudoers.d/${USERNAME}"
 chmod 0440 "/etc/sudoers.d/${USERNAME}"
 
@@ -112,3 +116,5 @@ EOL
 
 WORKDIR /workspace
 USER ${USERNAME}
+ENTRYPOINT [ "/bin/bash", "-c" ]
+CMD [ "sleep", "infinity" ]
